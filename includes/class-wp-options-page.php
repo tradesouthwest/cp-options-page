@@ -616,6 +616,10 @@ class WP_Options_Page {
 	 */
 	public function update_options ( $options ) {
 		$prev = \get_option( $this->option_name );
+		if ( $prev == 'wop_with_tabs_preview_1' ) {
+			$prev = null;
+		}
+
 		$values = \is_array( $prev ) ? $prev : [];
 		foreach ( $options as $data ) {
 			$values[ $data['id'] ] = $data['value'];
@@ -771,6 +775,12 @@ class WP_Options_Page {
 			case 'textarea':
 				$field['@sanitize'] = $field['@sanitize'] ?? 'sanitize_textarea_field';
 				break;
+			case 'iframe':
+				$field['@sanitize'] = $field['@sanitize'] ?? 'wp_kses_post';
+				break;
+			case 'code_editor':
+				$field['@sanitize'] = $field['@sanitize'] ?? 'wp_kses_post';
+				break;
 			default:
 				$field['@sanitize'] = $field['@sanitize'] ?? 'sanitize_text_field';
 				break;
@@ -886,6 +896,37 @@ class WP_Options_Page {
 		<?php $this->do_action( 'after_field_input', $field, $this ); ?>
 
 		<?php if ( $desc ) : ?>
+		<p class="description" id="<?php echo \esc_attr( $name ); ?>-description">
+			<?php echo $desc ?></p>
+		<?php endif;
+	}
+
+	/**
+	 * @since 0.1.0
+	 * Set default color using inline styles of theme mods/options page.
+	 * @param array $field
+	 * @return void
+	 */
+	protected function render_field_color ( $field ) {
+		$name = $field['name'];
+		$desc = $field['description'];
+		$value = $this->get_field_value( $field );
+
+		$atts = $field['attributes'] ?? [];
+		$atts['type'] = $atts['type'] ?? 'color';
+		$atts['id'] = $name;
+		$atts['name'] = $name;
+		$atts['value'] = $value;
+		$atts['class'] = $atts['class'] ?? 'color-field';
+		$atts['placeholder'] = $atts['placeholder'] ?? false;
+		$atts['aria-describedby'] = $desc ? \esc_attr( $name ) . '-description' : false;
+		?>
+
+		<input <?php echo self::parse_tag_atts( $atts ); ?>>
+
+		<?php $this->do_action( 'after_field_input', $field, $this ); ?>
+
+		<?php if ( $desc ) : ?>
 		<p class="description" id="<?php echo \esc_attr( $name ); ?>-description"><?php echo $desc ?></p>
 		<?php endif;
 	}
@@ -911,6 +952,66 @@ class WP_Options_Page {
 
 		<textarea <?php echo self::parse_tag_atts( $atts ); ?>><?php echo \esc_html( $value ); ?></textarea>
 
+		<?php $this->do_action( 'after_field_input', $field, $this ); ?>
+
+		<?php if ( $desc ) : ?>
+		<p class="description" id="<?php echo \esc_attr( $name ); ?>-description"><?php echo $desc ?></p>
+		<?php endif;
+	}
+
+
+	/**
+	 * @since 0.1.0
+	 * @param array $field
+	 * @return void
+	 */
+	protected function render_field_code_editor ( $field ) {
+		$name = $field['name'];
+		$desc = $field['description'];
+		$value = $this->get_field_value( $field );
+
+		$atts = $field['attributes'] ?? [];
+		$atts['id'] = $name;
+		$atts['name'] = $name;
+		$atts['class'] = $atts['class'] ?? 'large-text';
+		$atts['placeholder'] = $atts['placeholder'] ?? false;
+		$atts['rows'] = $atts['rows'] ?? 5;
+		$atts['aria-describedby'] = $desc ? \esc_attr( $name ) . '-description' : false;
+		?>
+ <textarea <?php echo self::parse_tag_atts( $atts ); ?> id="<?php echo \esc_attr( $name ); ?>" name="<?php echo \esc_attr( $name ); ?>" 
+ style="width: 50%; height: 300px;"><?php echo \esc_html( $value ); ?></textarea>
+		
+
+		<?php $this->do_action( 'after_field_input', $field, $this ); ?>
+
+		<?php if ( $desc ) : ?>
+		<p class="description" id="<?php echo \esc_attr( $name ); ?>-description"><?php echo $desc ?></p>
+		<?php endif;
+	}
+
+	/**
+	 * @since 0.1.0
+	 * @param array $field
+	 * @return void
+	 */
+	protected function render_field_iframe ( $field ) {
+		$name = $field['name'];
+		$desc = $field['description'];
+		$value = $this->get_field_value( $field );
+
+		$atts = $field['attributes'] ?? [];
+		$atts['id'] = $name;
+		$atts['name'] = $name;
+		$atts['class'] = $atts['class'] ?? '';
+		$atts['src'] = $atts['src'] ?? \site_url('/');
+		$atts['placeholder'] = $atts['placeholder'] ?? false;
+		$atts['width'] = $atts['width'] ?? 768;
+		$atts['height'] = $atts['height'] ?? 1024;
+		$atts['aria-describedby'] = $desc ? \esc_attr( $name ) . '-description' : false;
+		?>
+
+		<iframe <?php echo self::parse_tag_atts( $atts ); ?> src="<?php echo \esc_html( $value ); ?>"></iframe>
+<div style="display:block;clear:both;height:1px;width: 100%;"></div>
 		<?php $this->do_action( 'after_field_input', $field, $this ); ?>
 
 		<?php if ( $desc ) : ?>

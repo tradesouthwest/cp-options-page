@@ -20,11 +20,12 @@ class WOP_Page_With_Tabs extends WP_Options_Page {
 		// declare the "page_tabs" feature
 		$this->supports['page_tabs'] = [
 			// declare my tabs
-			'general' => 'General',
-			'license' => 'Styles'
+			'branding' => 'Branding',
+			'styles' => 'Styles'
 		];
         // see addons/rich_text_field.php
 		$this->supports[] = 'rich_text_field';
+		//$this->supports[] = 'code_editor_field';
 
 
 		parent::init();
@@ -33,30 +34,39 @@ class WOP_Page_With_Tabs extends WP_Options_Page {
 	public function get_fields () {
 		return [
 			[
-				'title' => 'A title for the first tab',
-				'description' => 'Lorem ipsum...',
+				'title' => 'Branding, Colors/Logo',
+				'description' => 'Change colors and add logo.',
 				'type' => 'title',
-				'tab' => 'general', // set the field tab
+				'tab' => 'branding', // set the field tab
 			],
 			[
 				'id' => 'text_1',
-				'title' => 'E-mail',
+				'title' => 'Public E-mail',
 				'type' => 'text',
-				'tab' => 'general', // set the field tab
+				'tab' => 'branding', // set the field tab
 			],
 			[
-				'id' => 'text_2',
-				'title' => 'Theme Styles',
-				'type' => 'text',
-				'tab' => 'license',
+				'id' => 'color_1',
+				'title' => 'Content Links Color',
+				'type' => 'color',
+				'tab' => 'branding', // set the field tab
 			],
-            [
-				'id' => 'text_area',
+			[
+				'id' => 'code_editor_page_css',
 				'title' => 'Additional CSS',
-				'type' => 'rich_text',
-				'tab' => 'license',
+				'type' => 'code_editor',
+				'description' => 'Use cursor to refresh frame below when ready to see changes.',
+				'tab' => 'styles',
                 
 			],
+			[
+				'id' => 'preview_1',
+				'title' => 'Theme Styles',
+				'type' => 'iframe',
+				'scr' => \site_url(),
+				'tab' => 'styles',
+			],
+           
 		];
 	}
 }
