@@ -224,6 +224,6 @@ require get_template_directory() . '/includes/class-wp-options-page.php';
 /**
  * Customizer additions.
  */
-require get_template_directory() . '/includes/class-rich-text-field.php';
+//require get_template_directory() . '/includes/class-rich-text-field.php';
 require get_template_directory() . '/includes/with_tabs.php';
 require get_template_directory() . '/includes/tabs.php';
