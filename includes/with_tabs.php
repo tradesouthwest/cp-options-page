@@ -10,6 +10,7 @@ class WOP_Page_With_Tabs extends WP_Options_Page {
 
 	public function __construct () {
 		add_action( 'init', [ $this, 'init' ] );
+		add_action( 'wp_head', [ $this, 'with_tabs_use_admin_styles' ] ); 
 	}
 
 	public function init () {
@@ -24,7 +25,7 @@ class WOP_Page_With_Tabs extends WP_Options_Page {
 			'styles' => 'Styles'
 		];
         // see addons/rich_text_field.php
-		$this->supports[] = 'rich_text_field';
+		//$this->supports[] = 'rich_text_field';
 		//$this->supports[] = 'code_editor_field';
 
 
@@ -68,6 +69,33 @@ class WOP_Page_With_Tabs extends WP_Options_Page {
 			],
            
 		];
+	}
+
+	/** #A1
+	 * Put scripts in the head.
+	 * @since 1.0.0
+	 * @param wp_unslash   Remove slashes from a string or array of strings.
+	 */
+	
+	public function with_tabs_use_admin_styles()
+	{ 
+		
+		$css_new = \get_option('wop_with_tabs_options')['code_editor_page_css'];
+
+		$css_toget = ( empty( $css_new  ) ) ? 'body{color:inherit;}' : $css_new;
+		// 1 = use these styles. 0 = do not use.
+		$opt_styles = '1';
+		$output     = '';
+		if( $opt_styles == 1 ) {
+			$output .= '<style type="text/css" id="thememod-styles">';
+		if( $opt_styles == "1" ) : 
+			$output .= wp_unslash( $css_toget );
+		endif;
+			$output .= '</style> ';
+		} 
+		
+		print( $output );
+
 	}
 }
 

@@ -267,6 +267,7 @@ class WP_Options_Page {
 	 * @return void
 	 */
 	protected function init_hooks () {
+
 		// register admin page
 		\add_action( 'admin_menu', [ $this, 'add_menu_page' ], $this->menu_priority );
 
